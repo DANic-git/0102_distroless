@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:alpine
-    command: ["postgres", "-c", "log_statement=all"]
+    command: [ "postgres", "-c", "log_statement=all" ]
     ports:
       - '5432:5432'
     environment:
@@ -11,11 +11,15 @@ services:
     volumes:
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     restart: unless-stopped
-  # app:
-  #   image: app
-  #   build: .
-  #   ports:
-  #     - '9000:9000'
-  #   depends_on:
-  #     - db
-  #   restart: unless-stopped
+  app:
+    image: app
+    build: .
+    environment:
+      - HOST=0.0.0.0
+      - PORT=9000
+      - DBURL=postgres://user:pass@db:5432/app
+    ports:
+      - '9000:9000'
+    depends_on:
+      - db
+    restart: unless-stopped
