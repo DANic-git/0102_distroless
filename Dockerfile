@@ -11,7 +11,6 @@ FROM busybox:1.35.0-uclibc as busybox
 
 # Now copy it into our base image.
 FROM gcr.io/distroless/base-debian11
-FROM golang:1.19-alpine
 ENV HOST 0.0.0.0
 ENV PORT 9000
 ENV DBURL postgres://user:pass@db:5432/app
