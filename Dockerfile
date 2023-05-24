@@ -5,7 +5,7 @@ WORKDIR /go/src/app
 COPY . .
 
 RUN go mod download
-RUN CGO_ENABLED=0 go build -o /go/bin/app.bin cmd/main.go
+RUN go build -o /go/bin/app.bin cmd/main.go
 
 FROM busybox:1.35.0-uclibc as busybox
 
@@ -17,8 +17,9 @@ ENV PORT 9000
 ENV DBURL postgres://user:pass@db:5432/app
 USER 10001
 WORKDIR /app
-COPY --chown=1000:1000 --from=build /go/bin/app.bin /app/app.bin
-COPY --from=busybox:1.35.0-uclibc /bin/sh /bin/sh
+COPY --from=build /go/bin/app.bin /app/app.bin
+COPY --from=build /bin/sh /bin/sh
+COPY --from=build /lib/ld-musl-* /lib/
 
 EXPOSE 9000
 
